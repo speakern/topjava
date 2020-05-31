@@ -58,15 +58,15 @@ public class UserMealsUtil {
         return meals.stream().filter(x -> TimeUtil.isBetweenHalfOpen(x.getDateTime().toLocalTime(), startTime, endTime))
                 .map((e) -> new UserMealWithExcess(e.getDateTime(), e.getDescription(), e.getCalories(),
                         caloriesPerDays.get(e.getDateTime().toLocalDate()) > caloriesPerDay))
-                .collect(Collectors.toList()) ;
+                .collect(Collectors.toList());
     }
 
     public static List<UserMealWithExcess> filteredByStreams2(List<UserMeal> meals, LocalTime startTime, LocalTime endTime, int caloriesPerDay) {
-            return meals.stream().collect(new WithExcessCollector(startTime, endTime, caloriesPerDay));
+        return meals.stream().collect(new WithExcessCollector(startTime, endTime, caloriesPerDay));
     }
 
 
-    static class WithExcessCollector implements Collector<UserMeal, Map.Entry<List<UserMeal>, List<UserMeal>>,  List<UserMealWithExcess>> {
+    static class WithExcessCollector implements Collector<UserMeal, Map.Entry<List<UserMeal>, List<UserMeal>>, List<UserMealWithExcess>> {
         private Integer caloriesPerDay;
         private LocalTime startTime;
         private LocalTime endTime;
@@ -80,9 +80,9 @@ public class UserMealsUtil {
 
         @Override
         public Supplier<Map.Entry<List<UserMeal>, List<UserMeal>>> supplier() {
-            return () -> new AbstractMap.SimpleImmutableEntry<List<UserMeal>, List<UserMeal>> (
-                            new ArrayList<UserMeal>(),
-                            new ArrayList<UserMeal>()
+            return () -> new AbstractMap.SimpleImmutableEntry<List<UserMeal>, List<UserMeal>>(
+                    new ArrayList<UserMeal>(),
+                    new ArrayList<UserMeal>()
             );
         }
 
@@ -111,7 +111,7 @@ public class UserMealsUtil {
 
         @Override
         public Function<Map.Entry<List<UserMeal>, List<UserMeal>>, List<UserMealWithExcess>> finisher() {
-            return  c -> {
+            return c -> {
                 List<UserMealWithExcess> resultList = new ArrayList<>();
 
                 c.getKey().forEach(meal -> {

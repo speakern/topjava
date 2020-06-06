@@ -24,7 +24,10 @@ public class MealsUtil {
                 new Meal(LocalDateTime.of(2020, Month.JANUARY, 31, 20, 0), "Ужин", 410)
         );
 
-        List<MealTo> mealsTo = filteredByStreams(meals, LocalTime.of(7, 0), LocalTime.of(12, 0), 2000);
+        final LocalTime startTime = LocalTime.of(7, 0);
+        final LocalTime endTime = LocalTime.of(12, 0);
+
+        List<MealTo> mealsTo = filteredByStreams(meals, startTime, endTime, 2000);
         mealsTo.forEach(System.out::println);
     }
 
@@ -36,7 +39,7 @@ public class MealsUtil {
                 );
 
         return meals.stream()
-                .filter(meal -> TimeUtil.isBetweenHalfOpen(meal.getTime(), startTime, endTime))
+                .filter(meal -> isBetweenHalfOpen(meal.getTime(), startTime, endTime))
                 .map(meal -> createTo(meal, caloriesSumByDate.get(meal.getDate()) > caloriesPerDay))
                 .collect(Collectors.toList());
     }

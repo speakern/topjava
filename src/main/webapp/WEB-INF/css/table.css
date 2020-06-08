@@ -1,0 +1,25 @@
+table {
+    border: 1px solid grey;
+    font-family: "Lucida Sans Unicode", "Lucida Grande", sans-serif;
+}
+
+th {
+    font-size: 0.9em;
+    padding: 10px;
+    border: 1px solid #A9E2CC;
+    font-family: "Lucida Sans Unicode", "Lucida Grande", sans-serif;
+}
+
+td {
+    font-size: 0.8em;
+    padding: 5px 7px;
+    border: 1px solid #A9E2CC;
+}
+
+.green {
+    color: green;
+}
+
+.red {
+    color: firebrick;
+}

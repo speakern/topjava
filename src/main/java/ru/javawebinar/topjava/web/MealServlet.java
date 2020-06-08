@@ -22,7 +22,7 @@ public class MealServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         log.debug("redirect to meals");
         List<Meal> meals = MealsUtil.meals;
-        List<MealTo> mealsTo = MealsUtil.filteredByStreams(meals, LocalTime.of(0, 0), LocalTime.of(23, 59), 2000);
+        List<MealTo> mealsTo = MealsUtil.filteredByStreams(meals, LocalTime.MIN, LocalTime.MAX, 2000);
         request.setAttribute("mealList", mealsTo);
         request.getRequestDispatcher("/meals.jsp").forward(request, response);
     }

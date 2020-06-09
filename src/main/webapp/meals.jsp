@@ -21,7 +21,7 @@
         <th></th>
     </tr>
 <c:forEach var="meal" items="${mealList}">
-    <tr class = "<c:out value="${meal.isExcess() ? 'green' : 'red'}" />">
+    <tr class = "<c:out value="${meal.isExcess() ? 'red' : 'green'}" />">
         <td>${meal.getId()} </td>
         <td>${meal.getDescription()} </td>
         <td>${meal.getDateTimeToString()}</td>
@@ -38,5 +38,8 @@
     </tr>
 </c:forEach>
 </table>
+<form action = "addMeal.jsp">
+    <input type="submit" value="Добавить новую запись">
+</form>
 </body>
 </html>

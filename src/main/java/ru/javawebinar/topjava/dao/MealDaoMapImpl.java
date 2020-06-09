@@ -1,8 +1,6 @@
 package ru.javawebinar.topjava.dao;
 
 import ru.javawebinar.topjava.model.Meal;
-import ru.javawebinar.topjava.util.MealsUtil;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -28,8 +26,8 @@ public class MealDaoMapImpl implements MealDao {
     }
 
     @Override
-    public void delete(Meal meal) {
-        mealMap.remove(meal.getId());
+    public void delete(Integer id) {
+        mealMap.remove(id);
     }
 
     @Override

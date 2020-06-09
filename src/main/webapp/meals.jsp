@@ -24,17 +24,10 @@
     <tr class = "<c:out value="${meal.isExcess() ? 'red' : 'green'}" />">
         <td>${meal.getId()} </td>
         <td>${meal.getDescription()} </td>
-        <td>${meal.getDateTimeToString()}</td>
+        <td>${meal.getDateTime().format(dateTimeFormatter)}</td>
         <td>${meal.getCalories()}</td>
-        <td>
-            <form action = "updateMeal.jsp" method="post">
-                <input type="hidden" name="id" value="${user.getId()}">
-                <input type="hidden" name="name" value="${user.getName()}">
-                <input type="hidden" name="age" value="${user.getAge()}">
-                <input type="submit" value="Изменить" style="float:left">
-            </form>
-        </td>
-        <td></td>
+        <td><a href="meals?action=edit&id=<c:out value="${meal.getId()}"/>">Update</a></td>
+        <td><a href="meals?action=delete&id=<c:out value="${meal.getId()}"/>">Delete</a></td>
     </tr>
 </c:forEach>
 </table>

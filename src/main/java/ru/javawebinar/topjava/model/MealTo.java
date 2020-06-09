@@ -32,12 +32,12 @@ public class MealTo {
                 '}';
     }
 
-    public String getDateTimeToString() {
-        return dateTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
-    }
-
     public String getDescription() {
         return description;
+    }
+
+    public LocalDateTime getDateTime() {
+        return dateTime;
     }
 
     public int getCalories() {

@@ -3,7 +3,6 @@ package ru.javawebinar.topjava.services;
 import ru.javawebinar.topjava.dao.MealDao;
 import ru.javawebinar.topjava.dao.MealDaoMapImpl;
 import ru.javawebinar.topjava.model.Meal;
-
 import java.util.List;
 
 public class MealService {
@@ -13,23 +12,23 @@ public class MealService {
     public MealService() {
     }
 
-    public Meal findMeal(int id) {
+    public Meal find(Integer id) {
         return mealsDao.findById(id);
     }
 
-    public void saveMeal(Meal meal) {
+    public void save(Meal meal) {
         mealsDao.save(meal);
     }
 
-    public void deleteMeal(Meal meal) {
-        mealsDao.delete(meal);
+    public void delete(Integer id) {
+        mealsDao.delete(id);
     }
 
-    public void updateMeal(Meal meal) {
+    public void update(Meal meal) {
         mealsDao.update(meal);
     }
 
-    public List<Meal> findAllMeals() {
+    public List<Meal> findAll() {
         return mealsDao.findAll();
     }
 

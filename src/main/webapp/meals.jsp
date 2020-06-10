@@ -4,7 +4,7 @@
 
 <html lang="ru">
 <head>
-    <title>Users</title>
+    <title>Meals</title>
 </head>
 <body>
 <h3><a href="index.html">Home</a></h3>
@@ -13,7 +13,6 @@
 
 <table>
     <tr>
-        <th>Id</th>
         <th>Description</th>
         <th>Data/Time</th>
         <th>Calories</th>
@@ -22,7 +21,6 @@
     </tr>
 <c:forEach var="meal" items="${mealList}">
     <tr class = "<c:out value="${meal.isExcess() ? 'red' : 'green'}" />">
-        <td>${meal.getId()} </td>
         <td>${meal.getDescription()} </td>
         <td>${meal.getDateTime().format(dateTimeFormatter)}</td>
         <td>${meal.getCalories()}</td>

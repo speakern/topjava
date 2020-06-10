@@ -1,43 +1,23 @@
 package ru.javawebinar.topjava.util;
 
+import ru.javawebinar.topjava.dao.MealDao;
+import ru.javawebinar.topjava.dao.MealDaoMapImpl;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.model.MealTo;
-import ru.javawebinar.topjava.services.MealService;
-
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.time.Month;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 public class MealsUtil {
 
-    private static AtomicInteger counter = new AtomicInteger(0);
-
-    public static MealService mealService = new MealService();
-
-    static {
-        mealService.save(new Meal(getNextID(), LocalDateTime.of(2020, Month.JANUARY, 30, 10, 0), "Завтрак", 500));
-        mealService.save(new Meal(getNextID(), LocalDateTime.of(2020, Month.JANUARY, 30, 13, 0), "Обед", 1000));
-        mealService.save(new Meal(getNextID(), LocalDateTime.of(2020, Month.JANUARY, 30, 20, 0), "Ужин", 500));
-        mealService.save(new Meal(getNextID(), LocalDateTime.of(2020, Month.JANUARY, 31, 0, 0), "Еда на граничное значение", 100));
-        mealService.save(new Meal(getNextID(), LocalDateTime.of(2020, Month.JANUARY, 31, 10, 0), "Завтрак", 1000));
-        mealService.save(new Meal(getNextID(), LocalDateTime.of(2020, Month.JANUARY, 31, 13, 0), "Обед", 500));
-        mealService.save(new Meal(getNextID(), LocalDateTime.of(2020, Month.JANUARY, 31, 20, 0), "Ужин", 410));
-    }
-
     public static void main(String[] args) {
 
-        List<Meal> meals = mealService.findAll();
+        MealDao mealDao = new MealDaoMapImpl();
+        List<Meal> meals = mealDao.findAll();
         List<MealTo> mealsTo = filteredByStreams(meals, LocalTime.of(7, 0), LocalTime.of(12, 0), 2000);
         mealsTo.forEach(System.out::println);
-    }
-
-    public static int getNextID() {
-        return counter.addAndGet(1);
     }
 
     public static List<MealTo> filteredByStreams(List<Meal> meals, LocalTime startTime, LocalTime endTime, int caloriesPerDay) {

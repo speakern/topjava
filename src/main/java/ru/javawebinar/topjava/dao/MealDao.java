@@ -6,8 +6,8 @@ import java.util.List;
 
 public interface MealDao {
     Meal findById(Integer id);
-    void save(Meal meal);
-    void update(Meal meal);
+    Meal save(Meal meal);
+    Meal update(Meal meal);
     void delete(Integer id);
-    public List<Meal> findAll();
+    List<Meal> findAll();
 }

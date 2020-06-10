@@ -7,16 +7,16 @@
 <body>
 <form action = "meals" method="post">
     <input type="hidden" readonly="readonly" name="id"
-           value="${meal.getId()}"
+           value="${meal.id}"
     />
     <input required type="text" name="desc" placeholder="Description"
-           value="${meal.getDescription()}"
+           value="${meal.description}"
     />
     <input required type="datetime-local" name="datetime" placeholder="Data/Time"
-           value="${dateTime}"
+           value="${meal.dateTime}"
     />
-    <input required type="text" name="calories" placeholder="Calories"
-           value="${meal.getCalories()}"
+    <input required type="number" name="calories" placeholder="Calories"
+           value="${meal.calories}"
     />
     <input type="submit" value="Сохранить">
 </form>

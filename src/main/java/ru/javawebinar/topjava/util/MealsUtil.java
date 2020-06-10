@@ -15,7 +15,7 @@ public class MealsUtil {
     public static void main(String[] args) {
 
         MealDao mealDao = new MealDaoMapImpl();
-        List<Meal> meals = mealDao.findAll();
+        List<Meal> meals = mealDao.getAll();
         List<MealTo> mealsTo = filteredByStreams(meals, LocalTime.of(7, 0), LocalTime.of(12, 0), 2000);
         mealsTo.forEach(System.out::println);
     }

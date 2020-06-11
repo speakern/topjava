@@ -42,10 +42,9 @@ public class MealDaoMapImpl implements MealDao {
 
     @Override
     public Meal update(Meal meal) {
-        if (mealMap.get(meal.getId()) == null) {
+        if (mealMap.replace(meal.getId(), meal) == null) {
             return null;
         } else {
-            mealMap.put(meal.getId(), meal);
             return meal;
         }
     }
@@ -57,6 +56,6 @@ public class MealDaoMapImpl implements MealDao {
 
     @Override
     public List<Meal> getAll() {
-        return new ArrayList<Meal>(mealMap.values());
+        return new ArrayList<>(mealMap.values());
     }
 }

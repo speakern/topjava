@@ -5,16 +5,13 @@ import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.repository.MealRepository;
 import ru.javawebinar.topjava.util.DateTimeUtil;
 import ru.javawebinar.topjava.util.MealsUtil;
-import ru.javawebinar.topjava.util.ValidationUtil;
-import ru.javawebinar.topjava.util.exception.NotFoundException;
-import ru.javawebinar.topjava.web.SecurityUtil;
 
 import java.time.LocalDate;
 import java.util.Collection;
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 @Repository
@@ -23,14 +20,14 @@ public class InMemoryMealRepository implements MealRepository {
     private AtomicInteger counter = new AtomicInteger(0);
 
     {
-        MealsUtil.MEALS.forEach(m -> save(m, 1));
+        MealsUtil.MEALS.forEach(m -> save(m, m.getUserId()));
     }
 
     @Override
     public Meal save(Meal meal, int userId) {
         if (meal.isNew()) {
             meal.setId(counter.incrementAndGet());
-            meal.setUserId(SecurityUtil.authUserId());
+            meal.setUserId(userId);
             repository.put(meal.getId(), meal);
             return meal;
         }
@@ -48,7 +45,7 @@ public class InMemoryMealRepository implements MealRepository {
 
     @Override
     public Meal get(int id, int userId) {
-        Meal meal =  repository.get(id);
+        Meal meal = repository.get(id);
         if (meal != null && meal.getUserId() == userId) {
             return meal;
         }
@@ -57,21 +54,22 @@ public class InMemoryMealRepository implements MealRepository {
 
     @Override
     public Collection<Meal> getAll(int userId) {
-        return getAll(userId, null, null);
+        return filterByPredicate(userId, meal -> true);
     }
 
     @Override
-    public Collection<Meal> getAll(int userId, LocalDate startDate, LocalDate endDate) {
+    public Collection<Meal> getWithFilter(int userId, LocalDate startDate, LocalDate endDate) {
+        return filterByPredicate(userId, meal -> DateTimeUtil.isBetweenHalfOpen(meal.getDate(),
+                startDate == null ? LocalDate.MIN : startDate,
+                endDate == null ? LocalDate.MAX : endDate));
+    }
+
+    public Collection<Meal> filterByPredicate(int userId, Predicate<Meal> filter) {
         Collection<Meal> meals = repository.values().stream()
                 .filter(meal -> meal.getUserId() == userId)
-                .filter(meal -> DateTimeUtil.isBetweenHalfOpen(meal.getDate(),
-                        startDate == null ? LocalDate.MIN : startDate,
-                        endDate == null ? LocalDate.MAX : endDate))
+                .filter(filter)
                 .sorted((m1, m2) -> -m1.getDateTime().compareTo(m2.getDateTime()))
                 .collect(Collectors.toList());
-        if (meals.size() == 0) {
-            throw new NotFoundException("Пустой список");
-        }
         return meals;
     }
 }

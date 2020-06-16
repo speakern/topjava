@@ -30,9 +30,9 @@ public class MealRestController {
         return MealsUtil.getTos(service.getAll(authUserId()), MealsUtil.DEFAULT_CALORIES_PER_DAY);
     }
 
-    public List<MealTo> getAll(LocalDate startDate, LocalTime startTime, LocalDate endDate, LocalTime endTime) {
+    public List<MealTo> getWithFilter(LocalDate startDate, LocalTime startTime, LocalDate endDate, LocalTime endTime) {
         log.info("getAll with filter");
-        Collection<Meal> meals = service.getAll(authUserId(), startDate, endDate);
+        Collection<Meal> meals = service.getWithFilter(authUserId(), startDate, endDate);
         return MealsUtil.getFilteredTos(meals, MealsUtil.DEFAULT_CALORIES_PER_DAY,
                 startTime == null ? LocalTime.MIN : startTime,
                 endTime == null ? LocalTime.MAX : endTime);
@@ -56,8 +56,11 @@ public class MealRestController {
 
     public void update(Meal meal, int id) {
         log.info("update {} with id={}", meal, id);
-        assureIdConsistent(meal, id);
-        service.update(meal, authUserId());
+        Meal mealForExternalId = get(id);
+        if (mealForExternalId != null) {
+            assureIdConsistent(meal, id);
+            service.update(meal, authUserId());
+        }
     }
 
 }

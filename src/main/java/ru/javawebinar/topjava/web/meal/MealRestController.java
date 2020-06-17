@@ -8,6 +8,7 @@ import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.service.MealService;
 import ru.javawebinar.topjava.to.MealTo;
 import ru.javawebinar.topjava.util.MealsUtil;
+import ru.javawebinar.topjava.web.SecurityUtil;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -20,20 +21,20 @@ import static ru.javawebinar.topjava.web.SecurityUtil.authUserId;
 
 @Controller
 public class MealRestController {
-    protected final Logger log = LoggerFactory.getLogger(getClass());
+    private final Logger log = LoggerFactory.getLogger(getClass());
 
     @Autowired
     private MealService service;
 
     public List<MealTo> getAll() {
         log.info("getAll");
-        return MealsUtil.getTos(service.getAll(authUserId()), MealsUtil.DEFAULT_CALORIES_PER_DAY);
+        return MealsUtil.getTos(service.getAll(authUserId()), SecurityUtil.authUserCaloriesPerDay());
     }
 
     public List<MealTo> getWithFilter(LocalDate startDate, LocalTime startTime, LocalDate endDate, LocalTime endTime) {
         log.info("getAll with filter");
         Collection<Meal> meals = service.getWithFilter(authUserId(), startDate, endDate);
-        return MealsUtil.getFilteredTos(meals, MealsUtil.DEFAULT_CALORIES_PER_DAY,
+        return MealsUtil.getFilteredTos(meals, SecurityUtil.authUserCaloriesPerDay(),
                 startTime == null ? LocalTime.MIN : startTime,
                 endTime == null ? LocalTime.MAX : endTime);
     }
@@ -56,11 +57,8 @@ public class MealRestController {
 
     public void update(Meal meal, int id) {
         log.info("update {} with id={}", meal, id);
-        Meal mealForExternalId = get(id);
-        if (mealForExternalId != null) {
-            assureIdConsistent(meal, id);
-            service.update(meal, authUserId());
-        }
+        assureIdConsistent(meal, id);
+        service.update(meal, authUserId());
     }
 
 }

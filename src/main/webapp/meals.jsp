@@ -18,29 +18,27 @@
 </head>
 <body>
 <section>
-    <h3><a href="index.jsp">Home</a></h3>
+    <h3><a href="index.html">Home</a></h3>
     <hr/>
     <h2>Meals</h2>
-    <br>
-    <p>Текущий пользователь: ${userId}</p>
     <br>
     <form action="meals" method="get">
         <input type="hidden" name="action" value="filter">
         <div>
             <label for="startDate">От даты (включая)</label>
-            <input name="startDate" type="date" id="startDate" value="${startDate}">
+            <input name="startDate" type="date" id="startDate" value="${param.startDate}">
         </div>
         <div>
             <label for="endDate">До даты (включая)</label>
-            <input name="endDate" type="date" id="endDate" value="${endDate}">
+            <input name="endDate" type="date" id="endDate" value="${param.endDate}">
         </div>
         <div>
             <label for="startTime">От времени (включая)</label>
-            <input name="startTime" type="time" id="startTime">
+            <input name="startTime" type="time" id="startTime" value="${param.startTime}">
         </div>
         <div>
             <label for="endtime">До времени (исключая)</label>
-            <input name="endTime" type="time" id="endTime">
+            <input name="endTime" type="time" id="endTime" value="${param.endTime}">
         </div>
         <div>
             <button>Фильтровать</button>

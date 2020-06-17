@@ -7,6 +7,7 @@ import ru.javawebinar.topjava.model.Role;
 import ru.javawebinar.topjava.model.User;
 import ru.javawebinar.topjava.repository.UserRepository;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -41,7 +42,7 @@ public class InMemoryUserRepository implements UserRepository {
             return user;
         }
         // handle case: update, but not present in storage
-        return repository.computeIfPresent(user.getId(), (id, oldMeal) -> user);
+        return repository.computeIfPresent(user.getId(), (id, oldUser) -> user);
     }
 
     @Override
@@ -54,21 +55,17 @@ public class InMemoryUserRepository implements UserRepository {
     public List<User> getAll() {
         log.info("getAll");
         return repository.values().stream()
-                .sorted((u1, u2) -> u1.getName() != u2.getName() ? u1.getEmail().compareTo(u2.getEmail()) :
-                        u1.getEmail().compareTo(u2.getEmail()))
+        .sorted(Comparator
+                .comparing(User::getName)
+                .thenComparing(User::getEmail))
                 .collect(Collectors.toList());
     }
 
     @Override
     public User getByEmail(String email) {
         log.info("getByEmail {}", email);
-        List<User> users = repository.values().stream()
+        return repository.values().stream()
                 .filter(u -> u.getEmail().equals(email))
-                .collect(Collectors.toList());
-        if (users.size() > 0) {
-            return users.get(0);
-        } else {
-            return null;
-        }
+                .findFirst().orElse(null);
     }
 }

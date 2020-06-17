@@ -7,7 +7,8 @@ import ru.javawebinar.topjava.util.DateTimeUtil;
 import ru.javawebinar.topjava.util.MealsUtil;
 
 import java.time.LocalDate;
-import java.util.Collection;
+import java.util.Comparator;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -32,45 +33,43 @@ public class InMemoryMealRepository implements MealRepository {
             return meal;
         }
         // handle case: update, but not present in storage
-        return repository.computeIfPresent(meal.getId(), (id, oldMeal) -> meal);
+        if (get(meal.getId(), userId) != null) {
+            meal.setUserId(userId);
+            return repository.computeIfPresent(meal.getId(), (id, oldMeal) -> meal);
+        } else {
+            return null;
+        }
     }
 
     @Override
     public boolean delete(int id, int userId) {
-        if (get(id, userId) != null) {
-            return repository.remove(id) != null;
-        }
-        return false;
+        return (get(id, userId) != null) && repository.remove(id) != null;
     }
 
     @Override
     public Meal get(int id, int userId) {
         Meal meal = repository.get(id);
-        if (meal != null && meal.getUserId() == userId) {
-            return meal;
-        }
-        return null;
+        return (meal != null && meal.getUserId() == userId) ? meal : null;
     }
 
     @Override
-    public Collection<Meal> getAll(int userId) {
+    public List<Meal> getAll(int userId) {
         return filterByPredicate(userId, meal -> true);
     }
 
     @Override
-    public Collection<Meal> getWithFilter(int userId, LocalDate startDate, LocalDate endDate) {
+    public List<Meal> getWithFilter(int userId, LocalDate startDate, LocalDate endDate) {
         return filterByPredicate(userId, meal -> DateTimeUtil.isBetweenHalfOpen(meal.getDate(),
                 startDate == null ? LocalDate.MIN : startDate,
-                endDate == null ? LocalDate.MAX : endDate));
+                endDate == null ? LocalDate.MAX : endDate.plusDays(1)));
     }
 
-    public Collection<Meal> filterByPredicate(int userId, Predicate<Meal> filter) {
-        Collection<Meal> meals = repository.values().stream()
+    private List<Meal> filterByPredicate(int userId, Predicate<Meal> filter) {
+        return  repository.values().stream()
                 .filter(meal -> meal.getUserId() == userId)
                 .filter(filter)
-                .sorted((m1, m2) -> -m1.getDateTime().compareTo(m2.getDateTime()))
+                .sorted(Comparator.comparing(Meal::getDateTime).reversed())
                 .collect(Collectors.toList());
-        return meals;
     }
 }
 

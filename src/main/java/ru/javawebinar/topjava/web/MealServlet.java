@@ -17,10 +17,8 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
-import java.util.Arrays;
 import java.util.Objects;
 
-import static ru.javawebinar.topjava.web.SecurityUtil.authUserId;
 
 public class MealServlet extends HttpServlet {
     private static final Logger log = LoggerFactory.getLogger(MealServlet.class);
@@ -32,13 +30,11 @@ public class MealServlet extends HttpServlet {
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
             appCtx = new ClassPathXmlApplicationContext("spring/spring-app.xml");
-            System.out.println("Bean definition names: " + Arrays.toString(appCtx.getBeanDefinitionNames()));
             mealRestController = appCtx.getBean(MealRestController.class);
     }
 
     @Override
     public void destroy() {
-        super.destroy();
         appCtx.close();
     }
 
@@ -50,7 +46,7 @@ public class MealServlet extends HttpServlet {
         Meal meal = new Meal(id.isEmpty() ? null : Integer.valueOf(id),
                 LocalDateTime.parse(request.getParameter("dateTime")),
                 request.getParameter("description"),
-                Integer.parseInt(request.getParameter("calories")), authUserId());
+                Integer.parseInt(request.getParameter("calories")), null);
 
         log.info(meal.isNew() ? "Create {}" : "Update {}", meal);
         if (id.isEmpty()) {
@@ -75,38 +71,24 @@ public class MealServlet extends HttpServlet {
             case "create":
             case "update":
                 final Meal meal = "create".equals(action) ?
-                        new Meal(LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES), "", 1000, authUserId()) :
+                        new Meal(LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES), "", 1000, 0) :
                         mealRestController.get(getId(request));
                 request.setAttribute("meal", meal);
                 request.getRequestDispatcher("/mealForm.jsp").forward(request, response);
                 break;
             case "filter":
                 log.info("getAllWithFilter");
-                LocalDate startDate = request.getParameter("startDate").isEmpty() ? null : LocalDate.parse(request.getParameter("startDate"));
-                LocalDate endDate = request.getParameter("endDate").isEmpty() ? null : LocalDate.parse(request.getParameter("endDate"));
-
                 request.setAttribute("meals", mealRestController.getWithFilter(
-                        startDate,
+                        request.getParameter("startDate").isEmpty() ? null : LocalDate.parse(request.getParameter("startDate")),
                         request.getParameter("startTime").isEmpty() ? null : LocalTime.parse(request.getParameter("startTime")),
-                        endDate,
+                        request.getParameter("endDate").isEmpty() ? null : LocalDate.parse(request.getParameter("endDate")),
                         request.getParameter("endTime").isEmpty() ? null : LocalTime.parse(request.getParameter("endTime"))));
-                request.setAttribute("userId", authUserId());
-                request.setAttribute("startDate", startDate);
-                request.setAttribute("endDate", endDate);
                 request.getRequestDispatcher("/meals.jsp").forward(request, response);
-                break;
-            case "security":
-                log.info("autorization");
-                int userId = Integer.parseInt(request.getParameter("user"));
-                SecurityUtil.setAuthUserId(userId);
-                request.setAttribute("userId", userId);
-                request.getRequestDispatcher("/index.jsp").forward(request, response);
                 break;
             case "all":
             default:
                 log.info("getAll");
                 request.setAttribute("meals", mealRestController.getAll());
-                request.setAttribute("userId", authUserId());
                 request.getRequestDispatcher("/meals.jsp").forward(request, response);
                 break;
         }

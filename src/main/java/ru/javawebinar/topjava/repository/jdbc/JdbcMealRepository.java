@@ -1,6 +1,6 @@
 package ru.javawebinar.topjava.repository.jdbc;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Autowired;;
 import org.springframework.dao.support.DataAccessUtils;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -48,8 +48,8 @@ public class JdbcMealRepository implements MealRepository {
             Number newKey = insertMeal.executeAndReturnKey(map);
             meal.setId(newKey.intValue());
         } else if (namedParameterJdbcTemplate.update(
-                "UPDATE meals SET date_time=:date_time, description=:description, calories=:calories, " +
-                        "user_id=:user_id WHERE id=:id", map) == 0) {
+                "UPDATE meals SET date_time=:date_time, description=:description, calories=:calories " +
+                        "WHERE id=:id AND user_id=:user_id", map) == 0) {
             return null;
         }
         return meal;
@@ -73,6 +73,6 @@ public class JdbcMealRepository implements MealRepository {
 
     @Override
     public List<Meal> getBetweenHalfOpen(LocalDateTime startDate, LocalDateTime endDate, int userId) {
-        return jdbcTemplate.query("SELECT * FROM meals WHERE user_id=? and date_time between ? and ? ORDER BY date_time DESC", ROW_MAPPER, userId, startDate, endDate);
+        return jdbcTemplate.query("SELECT * FROM meals WHERE user_id=? and date_time >=? and date_time <? ORDER BY date_time DESC", ROW_MAPPER, userId, startDate.toLocalDate(), endDate.toLocalDate());
     }
 }

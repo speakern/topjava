@@ -19,8 +19,8 @@ public class MealTestData {
     public static final Meal MEAL_USER_5 =new Meal(MEAL_ID + 4, LocalDateTime.of(2020, Month.JANUARY, 31, 10, 0), "Завтрак", 1000);
     public static final Meal MEAL_USER_6 =new Meal(MEAL_ID + 5, LocalDateTime.of(2020, Month.JANUARY, 31, 13, 0), "Обед", 500);
     public static final Meal MEAL_USER_7 =new Meal(MEAL_ID + 6, LocalDateTime.of(2020, Month.JANUARY, 31, 20, 0), "Ужин", 410);
-    public static final Meal MEAL_ADMIN_1 =new Meal(MEAL_ID + 6, LocalDateTime.of(2020, Month.JANUARY, 30, 14, 0), "Админ ланч", 510);;
-    public static final Meal MEAL_ADMIN_2 =new Meal(MEAL_ID + 6, LocalDateTime.of(2020, Month.JANUARY, 30, 21, 0), "Админ ужин", 1500);;
+    public static final Meal MEAL_ADMIN_1 =new Meal(MEAL_ID + 7, LocalDateTime.of(2020, Month.JANUARY, 30, 14, 0), "Админ ланч", 510);;
+    public static final Meal MEAL_ADMIN_2 =new Meal(MEAL_ID + 8, LocalDateTime.of(2020, Month.JANUARY, 30, 21, 0), "Админ ужин", 1500);;
 
     public static Meal getNew() {
       return new Meal(LocalDateTime.of(2020, Month.JANUARY, 30, 11, 0), "Второй завтрак", 501);
@@ -30,6 +30,7 @@ public class MealTestData {
         Meal updated = new Meal(MEAL_USER_1);
         updated.setCalories(501);
         updated.setDescription("Завтрак1");
+        updated.setDateTime(LocalDateTime.of(2020, Month.JANUARY, 30, 10, 0));
         return updated;
     }
 

@@ -11,13 +11,21 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 @NamedQueries({
-        @NamedQuery(name = User.DELETE, query = "DELETE FROM User u WHERE u.id=:id"),
-        @NamedQuery(name = User.BY_EMAIL, query = "SELECT u FROM User u LEFT JOIN FETCH u.roles WHERE u.email=?1"),
-        @NamedQuery(name = User.ALL_SORTED, query = "SELECT u FROM User u LEFT JOIN FETCH u.roles ORDER BY u.name, u.email"),
+        @NamedQuery(name = Meal.DELETE, query = "DELETE FROM Meal m WHERE m.id=:id AND m.user.id=:userId"),
+        @NamedQuery(name = Meal.BY_ID_USER, query = "SELECT m FROM Meal m WHERE m.id = :id AND m.user.id=:userId"),
+        @NamedQuery(name = Meal.ALL_SORTED, query = "SELECT m FROM Meal m WHERE m.user.id=:userId ORDER BY m.dateTime DESC"),
+        @NamedQuery(name = Meal.BETWEEN_HALF_OPEN, query = "SELECT m FROM Meal m WHERE m.user.id=:userId AND m.dateTime >= :startTime AND m.dateTime < :endTime ORDER BY m.dateTime DESC"),
 })
+
 @Entity
 @Table(name = "meals", uniqueConstraints = {@UniqueConstraint(columnNames = {"user_id", "date_time"}, name = "meals_unique_user_datetime_idx")})
 public class Meal extends AbstractBaseEntity {
+
+    public static final String DELETE = "Meal.delete";
+    public static final String BY_ID_USER = "Meal.getByUser";
+    public static final String ALL_SORTED = "Meal.getAllSortd";
+    public static final String BETWEEN_HALF_OPEN = "Meal.betweenHalfOpen";
+
     @Column(name = "date_time", nullable = false, columnDefinition = "timestamp default now()")
     @NotNull
     private LocalDateTime dateTime;
@@ -31,8 +39,7 @@ public class Meal extends AbstractBaseEntity {
     @Range(min = 10, max = 100000)
     private int calories;
 
-    @Column(name = "user_id", nullable = false)
-    @Range(min = 100000)
+    @JoinColumn(name = "user_id", nullable = false)
     @ManyToOne(fetch = FetchType.LAZY)
     private User user;
 

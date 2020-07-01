@@ -1,17 +1,29 @@
 package ru.javawebinar.topjava.service;
 
+import org.junit.ClassRule;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExternalResource;
+import org.junit.rules.TestName;
 import org.junit.runner.RunWith;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.jdbc.SqlConfig;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.w3c.dom.ls.LSOutput;
 import ru.javawebinar.topjava.model.Meal;
+import ru.javawebinar.topjava.repository.inmemory.InMemoryMealRepository;
 import ru.javawebinar.topjava.util.exception.NotFoundException;
 
+import java.time.Duration;
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.Month;
+import java.util.HashMap;
+import java.util.Map;
 
 import static org.junit.Assert.assertThrows;
 import static ru.javawebinar.topjava.MealTestData.*;
@@ -25,9 +37,41 @@ import static ru.javawebinar.topjava.UserTestData.USER_ID;
 @RunWith(SpringRunner.class)
 @Sql(scripts = "classpath:db/populateDB.sql", config = @SqlConfig(encoding = "UTF-8"))
 public class MealServiceTest {
+    private static final Logger log = LoggerFactory.getLogger(MealServiceTest.class);
+    private static Map<String, Long> statisticMap = new HashMap<>();
+    private long startTime;
+    private long endTime;
 
     @Autowired
     private MealService service;
+
+    @Rule
+    public final TestName name = new TestName();
+
+    @Rule
+    public final ExternalResource resource = new ExternalResource() {
+        @Override
+        protected void before() throws Throwable {
+            startTime = System.currentTimeMillis();
+        }
+
+        @Override
+        protected void after() {
+            endTime = System.currentTimeMillis();
+            long elapsedTime = endTime - startTime;
+            log.info("Тест {} закончен, Время выполнения: {} ms", name.getMethodName(), elapsedTime);
+            statisticMap.put(name.getMethodName(), elapsedTime);
+        }
+    };
+
+    @ClassRule
+    public static final ExternalResource classResource = new ExternalResource() {
+        @Override
+        protected void after() {
+            log.info("Статистика тестов по времени выполнения:");
+            statisticMap.entrySet().forEach(e -> log.info("Тест \"{}\": - {} ms", e.getKey(), e.getValue()));
+        }
+    };
 
     @Test
     public void delete() throws Exception {

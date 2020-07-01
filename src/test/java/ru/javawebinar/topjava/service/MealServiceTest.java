@@ -25,6 +25,7 @@ import java.time.Month;
 import java.util.HashMap;
 import java.util.Map;
 
+import static java.lang.String.format;
 import static org.junit.Assert.assertThrows;
 import static ru.javawebinar.topjava.MealTestData.*;
 import static ru.javawebinar.topjava.UserTestData.ADMIN_ID;
@@ -40,7 +41,6 @@ public class MealServiceTest {
     private static final Logger log = LoggerFactory.getLogger(MealServiceTest.class);
     private static Map<String, Long> statisticMap = new HashMap<>();
     private long startTime;
-    private long endTime;
 
     @Autowired
     private MealService service;
@@ -52,14 +52,14 @@ public class MealServiceTest {
     public final ExternalResource resource = new ExternalResource() {
         @Override
         protected void before() throws Throwable {
-            startTime = System.currentTimeMillis();
+            startTime = System.nanoTime();
         }
 
         @Override
         protected void after() {
-            endTime = System.currentTimeMillis();
-            long elapsedTime = endTime - startTime;
-            log.info("Тест {} закончен, Время выполнения: {} ms", name.getMethodName(), elapsedTime);
+            Long endTime = System.nanoTime();
+            long elapsedTime = (endTime - startTime);
+            log.info("The test {} is over. Time spent: {} ms", name.getMethodName(), elapsedTime * 1.0 / 1_000_000);
             statisticMap.put(name.getMethodName(), elapsedTime);
         }
     };
@@ -68,8 +68,11 @@ public class MealServiceTest {
     public static final ExternalResource classResource = new ExternalResource() {
         @Override
         protected void after() {
-            log.info("Статистика тестов по времени выполнения:");
-            statisticMap.entrySet().forEach(e -> log.info("Тест \"{}\": - {} ms", e.getKey(), e.getValue()));
+            StringBuilder statMessage = new StringBuilder();
+            statisticMap.entrySet().forEach(e ->
+                statMessage.append(String.format("\n %-30s %-20s", e.getKey(), Double.toString(e.getValue() * 1.0 / 1_000_000).concat(" ms")))
+            );
+            log.info(statMessage.toString());
         }
     };
 

@@ -24,6 +24,7 @@ import java.time.LocalDate;
 import java.time.Month;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import static java.lang.String.format;
 import static org.junit.Assert.assertThrows;
@@ -59,7 +60,7 @@ public class MealServiceTest {
         protected void after() {
             Long endTime = System.nanoTime();
             long elapsedTime = (endTime - startTime);
-            log.info("The test {} is over. Time spent: {} ms", name.getMethodName(), elapsedTime * 1.0 / 1_000_000);
+            log.info("The test {} is over. Time spent: {} ms", name.getMethodName(), TimeUnit.NANOSECONDS.toMillis(elapsedTime));
             statisticMap.put(name.getMethodName(), elapsedTime);
         }
     };

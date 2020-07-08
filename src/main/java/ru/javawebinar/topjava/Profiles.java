@@ -6,13 +6,14 @@ public class Profiles {
             JPA = "jpa",
             DATAJPA = "datajpa";
 
-    public static final String REPOSITORY_IMPLEMENTATION = DATAJPA;
+    public static final String REPOSITORY_IMPLEMENTATION = JDBC;
 
     public static final String
             POSTGRES_DB = "postgres",
             HSQL_DB = "hsqldb";
 
     //  Get DB profile depending of DB driver in classpath
+    public static final String ACTIVE_DB = POSTGRES_DB;
     public static String getActiveDbProfile() {
         try {
             Class.forName("org.postgresql.Driver");

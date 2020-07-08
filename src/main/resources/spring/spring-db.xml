@@ -49,7 +49,9 @@
     </beans>
 
     <beans profile="jdbc">
-        <context:component-scan base-package="ru.javawebinar.**.repository.jdbc"/>
+        <!--        <context:component-scan base-package="ru.javawebinar.**.repository.jdbc"/>-->
+        <bean id="mealRepository" class="ru.javawebinar.topjava.repository.jdbc.JdbcMealRepository"/>
+        <bean id="userRepository" class="ru.javawebinar.topjava.repository.jdbc.JdbcUserRepository"/>
         <bean id="jdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate">
             <constructor-arg ref="dataSource"/>
         </bean>
@@ -58,6 +60,7 @@
             <constructor-arg ref="jdbcTemplate"/>
         </bean>
     </beans>
+
     <beans profile="jpa">
         <context:component-scan base-package="ru.javawebinar.**.repository.jpa"/>
     </beans>
@@ -76,7 +79,8 @@
             <property name="jpaPropertyMap">
                 <map>
                     <entry key="#{T(org.hibernate.cfg.AvailableSettings).FORMAT_SQL}" value="${hibernate.format_sql}"/>
-                    <entry key="#{T(org.hibernate.cfg.AvailableSettings).USE_SQL_COMMENTS}" value="${hibernate.use_sql_comments}"/>
+                    <entry key="#{T(org.hibernate.cfg.AvailableSettings).USE_SQL_COMMENTS}"
+                           value="${hibernate.use_sql_comments}"/>
                     <entry key="#{T(org.hibernate.cfg.AvailableSettings).JPA_PROXY_COMPLIANCE}" value="false"/>
                     <!--<entry key="#{T(org.hibernate.cfg.AvailableSettings).HBM2DDL_AUTO}" value="${hibernate.hbm2ddl.auto}"/>-->
                 </map>

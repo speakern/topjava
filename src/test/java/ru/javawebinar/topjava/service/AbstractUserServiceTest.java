@@ -38,7 +38,7 @@ public abstract class AbstractUserServiceTest extends AbstractServiceTest {
     @Before
     public void setUp() throws Exception {
         cacheManager.getCache("users").clear();
-       if (!Arrays.asList(environment.getActiveProfiles()).contains("jdbc")) {
+       if (!List.of(environment.getActiveProfiles()).contains("jdbc")) {
            jpaUtil.clear2ndLevelHibernateCache();
        }
     }
@@ -56,7 +56,7 @@ public abstract class AbstractUserServiceTest extends AbstractServiceTest {
     @Test
     public void duplicateMailCreate() throws Exception {
         assertThrows(DataAccessException.class, () ->
-                service.create(new User(null, "Duplicate", "user@yandex.ru", "newPass", Role.USER)));
+                service.create(new User(null, "Duplicate", "user@yandex.ru", "newPass", Role.USER, Role.ADMIN)));
     }
 
     @Test
@@ -102,7 +102,7 @@ public abstract class AbstractUserServiceTest extends AbstractServiceTest {
 
     @Test
     public void createWithException() throws Exception {
-        Assume.assumeTrue(!Arrays.asList(environment.getActiveProfiles()).contains("jdbc"));
+        Assume.assumeTrue(!List.of(environment.getActiveProfiles()).contains("jdbc"));
         validateRootCause(() -> service.create(new User(null, "  ", "mail@yandex.ru", "password", Role.USER)), ConstraintViolationException.class);
         validateRootCause(() -> service.create(new User(null, "User", "  ", "password", Role.USER)), ConstraintViolationException.class);
         validateRootCause(() -> service.create(new User(null, "User", "mail@yandex.ru", "  ", Role.USER)), ConstraintViolationException.class);

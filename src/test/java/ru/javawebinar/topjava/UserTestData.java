@@ -18,12 +18,11 @@ public class UserTestData {
     public static final User ADMIN = new User(ADMIN_ID, "Admin", "admin@gmail.com", "admin", Role.USER, Role.ADMIN);
 
     public static User getNew() {
-        //return new User(null, "New", "new@gmail.com", "newPass", 1555, false, new Date(), Collections.singleton(Role.USER));
         return new User(null, "New", "new@gmail.com", "newPass", 1555, false, new Date(), EnumSet.of(Role.USER, Role.ADMIN));
     }
 
     public static User getUpdated() {
-        User updated = new User(USER);
+        User updated = new User(ADMIN);
         updated.setName("UpdatedName");
         updated.setCaloriesPerDay(330);
         updated.setRoles(List.of(Role.ADMIN, Role.USER));

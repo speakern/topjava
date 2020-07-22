@@ -27,16 +27,16 @@ public class JspMealController extends AbstractMealController {
     public String delete(HttpServletRequest request) {
         int id = getId(request);
         delete(id);
-        return "redirect:all";
+        return "redirect:/meals";
     }
 
-    @GetMapping("/all")
+    @GetMapping("")
     public String getMeals(Model model) {
         model.addAttribute("meals", getAll());
         return "meals";
     }
 
-    @PostMapping("/update")
+    @PostMapping("")
     public String update(HttpServletRequest request) throws UnsupportedEncodingException {
         request.setCharacterEncoding("UTF-8");
         Meal meal = new Meal(
@@ -49,7 +49,7 @@ public class JspMealController extends AbstractMealController {
         } else {
             update(meal, getId(request));
         }
-        return "redirect:all";
+        return "redirect:meals";
     }
 
     @GetMapping("/create")

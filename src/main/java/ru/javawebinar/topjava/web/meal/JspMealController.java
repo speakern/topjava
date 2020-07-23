@@ -31,7 +31,7 @@ public class JspMealController extends AbstractMealController {
     }
 
     @GetMapping("")
-    public String getMeals(Model model) {
+    public String get(Model model) {
         model.addAttribute("meals", getAll());
         return "meals";
     }

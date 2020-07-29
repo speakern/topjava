@@ -4,14 +4,10 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.lang.Nullable;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import ru.javawebinar.topjava.model.Meal;
-import ru.javawebinar.topjava.model.User;
 import ru.javawebinar.topjava.to.MealTo;
-import ru.javawebinar.topjava.web.user.AdminRestController;
 
 import java.net.URI;
 import java.time.LocalDateTime;
@@ -24,7 +20,7 @@ public class MealRestController extends AbstractMealController {
     static final String REST_URL = "/rest/meals";
 
     @GetMapping
-    public List<Meal> getAll() {
+    public List<MealTo> getAll() {
         return super.getAll();
     }
 
@@ -59,11 +55,10 @@ public class MealRestController extends AbstractMealController {
 
     @GetMapping("/filter")
     public List<MealTo> getBeetwen(@RequestParam("startDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime startDate,
-                                   @RequestParam LocalDateTime startTime,
-                                   @RequestParam LocalDateTime endDate,
-                                   @RequestParam LocalDateTime endTime) {
+                                   @RequestParam("startTime") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime startTime,
+                                   @RequestParam("endDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime endDate,
+                                   @RequestParam("endTime") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime endTime) {
         return super.getBetween(startDate.toLocalDate(), startTime.toLocalTime(), endDate.toLocalDate(), endTime.toLocalTime());
     }
-
 
 }
